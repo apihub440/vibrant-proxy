@@ -1,4 +1,5 @@
-name = "vibrant-proxy"
+name = "crushersvibrant"
 main = "index.js"
 compatibility_date = "2026-05-11"
+
 workers_dev = true
