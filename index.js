@@ -1,12 +1,13 @@
 export default {
   async fetch(request) {
+
     const url = new URL(request.url)
 
-    // Home route
+    // Home
     if (url.pathname === "/") {
       return Response.json({
         success: true,
-        message: "Vibrant Proxy Working"
+        message: "Vibrant Proxy Running"
       })
     }
 
@@ -17,21 +18,51 @@ export default {
       const parent_id = url.searchParams.get("parent_id")
       const start = url.searchParams.get("start") || "0"
 
-      const api =
-        `https://pdablu-yourl.wasmer.app/?action=folder&course_id=${course_id}&parent_id=${parent_id}&start=${start}`
+      if (!course_id || !parent_id) {
+        return Response.json({
+          success: false,
+          message: "course_id and parent_id required"
+        })
+      }
 
-      const response = await fetch(api, {
-        headers: {
-          "User-Agent": "Mozilla/5.0",
-          "Referer": "https://eduvibe-vibrant.pages.dev/"
-        }
-      })
+      try {
 
-      const data = await response.json()
+        const api =
+          `https://pdablu-yourl.wasmer.app/?action=folder&course_id=${course_id}&parent_id=${parent_id}&start=${start}`
 
-      return Response.json(data)
+        const response = await fetch(api, {
+          headers: {
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json",
+            "Referer": "https://eduvibe-vibrant.pages.dev/"
+          }
+        })
+
+        const text = await response.text()
+
+        return new Response(text, {
+          status: 200,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
+        })
+
+      } catch (err) {
+
+        return Response.json({
+          success: false,
+          error: err.toString()
+        }, {
+          status: 500
+        })
+
+      }
+
     }
 
-    return new Response("Not Found", { status: 404 })
+    return new Response("Not Found", {
+      status: 404
+    })
   }
 }
