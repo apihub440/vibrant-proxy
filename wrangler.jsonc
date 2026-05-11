@@ -1,0 +1,5 @@
+{
+  "name": "vibrant-proxy",
+  "main": "functions/api/vibrant/folder.js",
+  "compatibility_date": "2026-05-11"
+}
